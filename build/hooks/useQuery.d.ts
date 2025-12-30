@@ -1,17 +1,5 @@
 /// <reference types="react" />
-export interface QueryOptions<T> {
-    variables?: Record<string, any>;
-    cacheKey?: string;
-    staleTime?: number;
-    headers?: Record<string, string>;
-    timeout?: number;
-    retry?: number;
-    retryDelay?: number;
-    autoFetch?: boolean;
-    prefetch?: boolean;
-    method?: "GET" | "POST";
-    optimisticUpdate?: (prevData: T | null, newData: T) => T;
-}
+import { QueryOptions } from "./types";
 export declare function useQuery<T>(endpoint: string, options: QueryOptions<T>): {
     data: T | null;
     error: Error | null;

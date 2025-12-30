@@ -1,18 +1,5 @@
 /// <reference types="react" />
-export interface GraphQueryOptions<T> {
-    query: string;
-    variables?: Record<string, any>;
-    cacheKey?: string;
-    staleTime?: number;
-    headers?: Record<string, string>;
-    timeout?: number;
-    retry?: number;
-    retryDelay?: number;
-    autoFetch?: boolean;
-    prefetch?: boolean;
-    method?: "GET" | "POST";
-    optimisticUpdate?: (prevData: T | null, newData: T) => T;
-}
+import { GraphQueryOptions } from "./types";
 export declare function useGraphQLQuery<T>(endpoint: string, options: GraphQueryOptions<T>): {
     data: T | null;
     error: Error | null;

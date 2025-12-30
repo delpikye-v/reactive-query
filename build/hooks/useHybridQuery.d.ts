@@ -1,23 +1,10 @@
 /// <reference types="react" />
-export interface HybridQueryOptions<T> {
-    cacheKey?: string;
-    optimisticUpdate?: (prevData: T | null, newData: T) => T;
-    staleTime?: number;
-    subscriptionUrl?: string;
-    retry?: number;
-    retryDelay?: number;
-    headers?: Record<string, string>;
-    timeout?: number;
-    autoFetch?: boolean;
-    prefetch?: boolean;
-    method?: "GET" | "POST";
-}
+import { HybridQueryOptions } from "./types";
 export interface HybridQueryParams<T> {
     query?: string;
     variables?: Record<string, any>;
     options?: HybridQueryOptions<T>;
 }
-export declare function prefetchQuery<T>(endpoint: string, query?: string, variables?: Record<string, any>, cacheKey?: string, headers?: Record<string, string>, method?: "GET" | "POST"): Promise<T | null>;
 export declare function useHybridQuery<T>(endpoint: string, { query, variables, options }: HybridQueryParams<T>): {
     data: T | null;
     error: Error | null;
@@ -26,3 +13,4 @@ export declare function useHybridQuery<T>(endpoint: string, { query, variables, 
     mutate: import("react").Dispatch<import("react").SetStateAction<T | null>>;
     cancel: () => void | undefined;
 };
+export declare function prefetchQuery<T>(endpoint: string, { query, variables, options }: HybridQueryParams<T>): Promise<T | null>;
