@@ -8,6 +8,9 @@ export interface GraphQueryOptions<T> {
     timeout?: number;
     retry?: number;
     retryDelay?: number;
+    autoFetch?: boolean;
+    prefetch?: boolean;
+    method?: "GET" | "POST";
     optimisticUpdate?: (prevData: T | null, newData: T) => T;
 }
 export declare function useGraphQLQuery<T>(endpoint: string, options: GraphQueryOptions<T>): {

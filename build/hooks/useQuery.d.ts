@@ -7,6 +7,9 @@ export interface QueryOptions<T> {
     timeout?: number;
     retry?: number;
     retryDelay?: number;
+    autoFetch?: boolean;
+    prefetch?: boolean;
+    method?: "GET" | "POST";
     optimisticUpdate?: (prevData: T | null, newData: T) => T;
 }
 export declare function useQuery<T>(endpoint: string, options: QueryOptions<T>): {

@@ -5,7 +5,7 @@
 
 ---
 
-**reactive-fetch** is a lightweight, reactive, and fully-featured data-fetching and state orchestration library for React.
+**reactive-query-z** is a lightweight, reactive, and fully-featured data-fetching and state orchestration library for React.
 It is a **React Query alternative** with built-in support for REST, GraphQL, real-time subscriptions, caching, optimistic updates, and global query invalidation.
 
 ***Note:*** For full-featured query management, see [React Query](https://tanstack.com/query/v4)

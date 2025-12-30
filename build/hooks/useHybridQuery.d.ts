@@ -8,12 +8,16 @@ export interface HybridQueryOptions<T> {
     retryDelay?: number;
     headers?: Record<string, string>;
     timeout?: number;
+    autoFetch?: boolean;
+    prefetch?: boolean;
+    method?: "GET" | "POST";
 }
 export interface HybridQueryParams<T> {
     query?: string;
     variables?: Record<string, any>;
     options?: HybridQueryOptions<T>;
 }
+export declare function prefetchQuery<T>(endpoint: string, query?: string, variables?: Record<string, any>, cacheKey?: string, headers?: Record<string, string>, method?: "GET" | "POST"): Promise<T | null>;
 export declare function useHybridQuery<T>(endpoint: string, { query, variables, options }: HybridQueryParams<T>): {
     data: T | null;
     error: Error | null;
