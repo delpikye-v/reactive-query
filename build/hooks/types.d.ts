@@ -1,4 +1,4 @@
-interface BaseOptions<T = any> {
+export interface BaseOptions<T = any> {
     cacheKey?: string;
     headers?: Record<string, string>;
     timeout?: number;
@@ -11,13 +11,14 @@ export interface QueryOptions<T> extends BaseOptions<T> {
     staleTime?: number;
     autoFetch?: boolean;
     prefetch?: boolean;
-    method?: "GET" | "POST";
+    method?: HttpMethod;
 }
 export interface GraphQueryOptions<T> extends QueryOptions<T> {
     query: string;
 }
 export interface HybridQueryOptions<T> extends QueryOptions<T> {
     subscriptionUrl?: string;
+    signal?: AbortSignal;
 }
 export interface MutationOptions<T> extends BaseOptions<T> {
     onSuccess?: (data: T) => void;
@@ -27,4 +28,4 @@ export interface GraphQLMutationOptions<TData, TVariables = any> extends Mutatio
     mutation: string;
     variables?: TVariables;
 }
-export {};
+export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";

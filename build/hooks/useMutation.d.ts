@@ -1,7 +1,7 @@
-import { MutationOptions } from "./types";
+import type { MutationOptions, HttpMethod } from "./types";
 export declare function useMutation<T = any>(endpoint: string, options?: MutationOptions<T>): {
-    mutate: (body: any, method?: "POST" | "PUT" | "PATCH" | "DELETE") => Promise<T>;
+    mutate: (body: any, method?: HttpMethod) => Promise<T>;
     loading: boolean;
     error: any;
-    cancel: () => void | undefined;
+    cancel: () => void;
 };

@@ -1,1 +1,1 @@
-export declare function createTimeoutSignal(timeout: number): AbortSignal;
+export declare function createTimeoutSignal(ms: number): AbortSignal;

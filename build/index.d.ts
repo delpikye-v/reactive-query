@@ -1,4 +1,6 @@
 export * from "./hooks/types";
+export * from "./core/middleware";
+export * from "./hooks/types";
 export { useHybridQuery, prefetchQuery } from "./hooks/useHybridQuery";
 export { useQuery } from "./hooks/useQuery";
 export { useMutation } from "./hooks/useMutation";
