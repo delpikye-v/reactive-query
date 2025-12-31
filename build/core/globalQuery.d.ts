@@ -1,8 +1,12 @@
 export declare const queryRegistry: {
-    register: <T = any>(cacheKey: string, refetch: () => void, setData?: ((updater: (prev?: T | undefined) => T) => void) | undefined, cancel?: () => void, initialCache?: T | undefined) => void;
-    getCache: <T_1 = any>(cacheKey: string) => T_1 | undefined;
-    setCache: <T_2 = any>(cacheKey: string, value: T_2) => void;
-    setData: <T_3 = any>(cacheKey: string, updater: (prev?: T_3 | undefined) => T_3) => void;
+    register: <TData = any>(cacheKey: string, refetch: () => void, setData?: ((updater: (prev?: TData | undefined) => TData) => void) | undefined, cancel?: () => void, initialCache?: TData | undefined) => void;
+    getCache: <TData_1 = any>(cacheKey: string) => TData_1 | undefined;
+    setCache: <TData_2 = any>(cacheKey: string, value: TData_2, options?: {
+        skip?: () => void;
+    }) => void;
+    setData: <TData_3 = any>(cacheKey: string, updater: (prev?: TData_3 | undefined) => TData_3, options?: {
+        skip?: () => void;
+    }) => void;
     cancel: (cacheKey: string) => void;
     invalidate: (cacheKey?: string) => void;
     unregister: (cacheKey: string) => void;

@@ -5,16 +5,14 @@
 
 ---
 
-**reactive-query-z** is a lightweight, reactive data-fetching library for React, built with hooks and TypeScript in mind.
+**reactive-query-z** is a **lightweight**, reactive data-fetching library for React, built with hooks and TypeScript in mind.
 Minimal API surface, predictable behavior, and production-ready features.
-
-***Note:*** For full-featured query management, see [React Query](https://tanstack.com/query/v4)
 
 [Live Example](https://codesandbox.io/p/sandbox/tmxkm5)
 
 ---
 
-## ✨ Features
+### ✨ Features
 
 * ⚡ Lightweight & hook-based
 * 🔁 REST + GraphQL support
@@ -45,26 +43,38 @@ yarn add reactive-query-z
 ```ts
 import { useQuery } from "reactive-query-z";
 
-type User = { id: number; name: string };
+type User = { id: string; title: string };
 
 function UserList() {
-  const { data, loading, error, refetch } = useQuery<User[]>("/api/users", {
-    cacheKey: "users",
-    staleTime: 5000,
+  const {
+    data: users,
+    loading,
+    refetch,
+    error,
+  } = useQuery<User[]>("https://jsonplaceholder.typicode.com/posts", {
+    cacheKey: "users-list",
+    // staleTime: 5000,
+    cacheTime: 10000,
+    // autoFetch: true,
+    headers: { "Content-Type": "application/json" },
   });
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error.message}</p>;
-
   return (
-    <>
+    <div>
+      {loading && <p>Loading...</p>}
+      {error && <p>Error: {error.message}</p>}
+
+      <button onClick={() => refetch()}>Refetch</button>
+      <button onClick={() => queryRegistry.invalidate("users-list")}>
+        Invalidate
+      </button>
+
       <ul>
-        {data?.map(u => (
-          <li key={u.id}>{u.name}</li>
+        {users?.map((u) => (
+          <li key={u.id}>{u.title}</li>
         ))}
       </ul>
-      <button onClick={refetch}>Refetch</button>
-    </>
+    </div>
   );
 }
 ```
@@ -76,23 +86,33 @@ function UserList() {
 ```ts
 import { useGraphQLQuery } from "reactive-query-z";
 
-type Message = { id: string; text: string };
+type Country = { code: string; name: string; emoji: string };
 
-function Messages() {
-  const { data } = useGraphQLQuery<{ messages: Message[] }>("/graphql", {
-    query: `
-      query {
-        messages { id text }
-      }
-    `,
-    cacheKey: "messages",
-    staleTime: 3000,
-  });
+export function CountriesList() {
+  const { data, loading, error, refetch } = useGraphQLQuery<{ countries: Country[] }>(
+    "https://countries.trevorblades.com/",
+    {
+      query: `
+        query {
+          countries { code name emoji }
+        }
+      `,
+      // headers: { "Content-Type": "application/json" },
+      cacheKey: "countries",
+      // staleTime: 5000,
+      // autoFetch: true,
+    }
+  );
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error.message}</p>;
 
   return (
     <ul>
-      {data?.messages.map(m => (
-        <li key={m.id}>{m.text}</li>
+      <button disabled={loading} onClick={refetch}>Refetch</button>
+      <br />
+      {data?.countries?.map(c => (
+        <li key={c.code}>{c.name} {c.emoji}</li>
       ))}
     </ul>
   );
@@ -106,18 +126,34 @@ function Messages() {
 ```ts
 import { useMutation, queryRegistry } from "reactive-query-z";
 
-type User = { id: number; name: string };
+type Post = {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+};
 
-function AddUser() {
-  const { mutate } = useMutation<User>("/api/users", {
-    cacheKey: "users",
-    optimisticUpdate: (prev, user) => [...(prev || []), user],
-    onSuccess: () => queryRegistry.invalidate("users"),
-  });
+export function AddPost() {
+  const { mutate, loading } = useMutation<Post>(
+    "https://jsonplaceholder.typicode.com/posts",
+    {
+      cacheKey: "posts",
+      optimisticUpdate: (prev, newPost) => newPost,
+      onSuccess: () => queryRegistry.invalidate("posts"),
+    }
+  );
+
+  const handleAdd = () => {
+    mutate({
+      title: "New Post",
+      body: "This is a new post",
+      userId: 1,
+    });
+  };
 
   return (
-    <button onClick={() => mutate({ name: "New User" })}>
-      Add User
+    <button onClick={handleAdd} disabled={loading}>
+      {loading ? "Adding..." : "Add Post"}
     </button>
   );
 }
@@ -128,33 +164,50 @@ function AddUser() {
 ### 4️⃣ GraphQL Mutation
 
 ```ts
-import { useGraphQLMutation, queryRegistry } from "reactive-query-z";
+export function AddPostGraphQL() {
+  const { mutate, loading, error } = useGraphQLMutation(
+    "https://graphqlzero.almansi.me/api",
+    {
+      mutation: `
+        mutation ($title: String!, $body: String!, $userId: ID!) {
+          createPost(input: { title: $title, body: $body, userId: $userId }) {
+            id
+            title
+            body
+          }
+        }
+      `,
+      variables: { title: "Hello", body: "World", userId: 122 },
+      // headers: { "Content-Type": "application/json" },
+      // cacheKey: "postsGraphQL",
+      onSuccess: () => queryRegistry.invalidate("postsGraphQL"),
+      onError: (err) => console.error("Mutation error", err),
+    }
+  );
 
-function SendMessage() {
-  const { mutate } = useGraphQLMutation("/graphql", {
-    mutation: `
-      mutation ($text: String!) {
-        createMessage(text: $text) { id text }
-      }
-    `,
-    variables: { text: "Hello!" },
-    cacheKey: "messages",
-    onSuccess: () => queryRegistry.invalidate("messages"),
-  });
-
-  return <button onClick={() => mutate()}>Send</button>;
+  return (
+    <button onClick={mutate} disabled={loading}>
+      {loading ? "Adding..." : "Add Post"}
+    </button>
+  );
 }
 ```
 
 ---
 
-### 5️⃣ Global Query Invalidation
+### 5️⃣ Global Query Invalidation & GlobalError
 
 ```ts
-import { queryRegistry } from "reactive-query-z";
+import { queryRegistry, setGlobalErrorHandler } from "reactive-query-z";
 
 queryRegistry.invalidate("users"); // specific
 queryRegistry.invalidate();        // all queries
+
+// Setup a global error handler
+setGlobalErrorHandler((error, info) => {
+  console.error("Global fetch error:", error, info);
+  // You can show a toast, modal, or redirect to login here
+});
 ```
 
 ---
@@ -167,33 +220,9 @@ import { useHybridQuery } from "reactive-query-z";
 const { data } = useHybridQuery("/graphql", {
   subscriptionUrl: "ws://localhost:4000",
   cacheKey: "messages",
+  // optimisticUpdate: (prev, next) => [...(prev || []), next],
+  // autoFetch: true,     
 });
-```
-
----
-
-### 7️⃣ Middleware
-
-```ts
-import { useMiddleware } from "reactive-query-z";
-
-// Logger
-useMiddleware("logger", async ctx => {
-  console.log(ctx.method, ctx.endpoint, ctx.body);
-  return ctx;
-});
-
-// Auth
-useMiddleware("auth", async ctx => ({
-  ...ctx,
-  options: {
-    ...ctx.options,
-    headers: {
-      ...ctx.options?.headers,
-      Authorization: `Bearer ${token}`,
-    },
-  },
-}));
 ```
 
 ---
@@ -206,16 +235,20 @@ useMutation
 useGraphQLQuery
 useGraphQLMutation
 useHybridQuery
-prefetchQuery
 queryRegistry
-useMiddleware
+
+prefetchQuery
+prefetchData
+fetchWithRetry
+commonFetch
+setGlobalErrorHandler
 ```
 
 ---
 
 ## ⚖️ Comparison with Other Libraries
 
-| Feature                    | reactive-fetch      | React Query | SWR  | Apollo Client |
+| Feature                    | reactive-query-z    | React Query | SWR  | Apollo Client |
 | -------------------------- | ------------------  | ----------- | ---- | ------------- |
 | REST support               | ✅                  | ✅           | ✅   | ⚠️ Partial    |
 | GraphQL support            | ✅                  | ⚠️ Plugin    | ❌   | ✅            |
@@ -232,12 +265,13 @@ useMiddleware
 
 ## 🤔 Why reactive-query-z?
 
-* You may want reactive-query-z if:
 * You want React Query–like power but with simpler internals
 * You need REST + GraphQL without separate clients
 * You want middleware control over every request
 * You prefer explicit cache keys & invalidation
 * You want something easy to read, debug, and extend
+
+***Note:*** For full-featured query management, see [React Query](https://tanstack.com/query/v4)
 
 ---
 

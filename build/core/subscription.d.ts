@@ -1,11 +1,11 @@
-type Callback<T> = (data: T) => void;
-export declare class SubscriptionManager<T> {
+type Callback<TData> = (data: TData) => void;
+export declare class SubscriptionManager<TData> {
     private url;
     private callbacks;
     private ws;
     constructor(url: string);
     connect(): void;
-    subscribe(cb: Callback<T>): () => boolean;
+    subscribe(cb: Callback<TData>): () => boolean;
     disconnect(): void;
 }
 export {};

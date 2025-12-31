@@ -1,1 +1,3 @@
-export declare function updateCache<T>(cacheKey: string | undefined, optimisticUpdate: ((prevData: T | null, newData: T) => T) | undefined, newData: T): void;
+export declare function invalidateCache(key: string): void;
+export declare function clearAllCache(): void;
+export declare function hasCache(key: string): boolean;

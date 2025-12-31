@@ -1,6 +1,6 @@
 {
   "name": "reactive-query-z",
-  "version": "2.2.0",
+  "version": "3.0.1",
   "description": "Query is a lightweight, reactive library for data fetching and state orchestration in React.",
   "license": "MIT",
   "author": "Delpi.Kye",
@@ -41,6 +41,8 @@
 
   "keywords": [
     "react",
+    "intent",
+    "intent-engine",
     "orchestration",
     "state-management",
     "architecture",

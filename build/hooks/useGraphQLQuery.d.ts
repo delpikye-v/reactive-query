@@ -1,10 +1,10 @@
 /// <reference types="react" />
-import type { GraphQueryOptions } from "./types";
-export declare function useGraphQLQuery<T>(endpoint: string, options: GraphQueryOptions<T>): {
-    data: T | null;
+import { GraphQueryOptions } from "./types";
+export declare function useGraphQLQuery<TData>(endpoint: string, options: GraphQueryOptions<TData>): {
+    data: TData | null;
     error: Error | null;
     loading: boolean;
-    refetch: () => Promise<T | null>;
-    setData: import("react").Dispatch<import("react").SetStateAction<T | null>>;
+    refetch: () => Promise<TData | null>;
+    mutate: import("react").Dispatch<import("react").SetStateAction<TData | null>>;
     cancel: () => void;
 };

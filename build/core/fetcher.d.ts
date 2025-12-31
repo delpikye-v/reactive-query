@@ -1,5 +1,2 @@
-type QueryOptions = RequestInit & {
-    cacheKey?: string;
-};
-export declare function fetcher<T>(url: string, options?: QueryOptions): Promise<T>;
-export {};
+import { FetchQueryOptions } from "./globalConfig";
+export declare function fetcher<TData>(url: string, options?: FetchQueryOptions): Promise<TData>;
