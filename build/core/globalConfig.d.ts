@@ -6,6 +6,9 @@ export type FetchQueryOptions = RequestInit & {
     baseURL?: string;
     headers?: Record<string, string>;
     isGraphQL?: boolean;
+    query?: string;
+    variables?: Record<string, any>;
+    operationName?: string;
 };
 export interface GlobalConfig {
     baseURL?: string;

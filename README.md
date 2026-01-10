@@ -1,4 +1,4 @@
-# 🚀 reactive-query-z
+# 🗄️ reactive-query-z
 
 [![NPM](https://img.shields.io/npm/v/reactive-query-z.svg)](https://www.npmjs.com/package/reactive-query-z)
 ![Downloads](https://img.shields.io/npm/dt/reactive-query-z.svg)

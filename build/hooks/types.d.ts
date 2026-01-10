@@ -14,6 +14,7 @@ export interface QueryOptions<TData, TVariables = Record<string, any>> extends C
     staleTime?: number;
     autoFetch?: boolean;
     prefetch?: boolean;
+    operationName?: string;
 }
 export interface GraphQueryOptions<TData, TVariables = Record<string, any>> extends QueryOptions<TData, TVariables> {
     query: string;
@@ -29,4 +30,5 @@ export interface MutationOptions<TData, TVariables = Record<string, any>> extend
 }
 export interface GraphQLMutationOptions<TData, TVariables = Record<string, any>> extends MutationOptions<TData, TVariables> {
     mutation: string;
+    operationName?: string;
 }

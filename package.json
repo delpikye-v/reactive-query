@@ -1,7 +1,7 @@
 {
   "name": "reactive-query-z",
-  "version": "3.0.1",
-  "description": "Query is a lightweight, reactive library for data fetching and state orchestration in React.",
+  "version": "3.1.0",
+  "description": "Lightning-fast state & API handling, reactive library for data fetching and state orchestration in React.",
   "license": "MIT",
   "author": "Delpi.Kye",
 

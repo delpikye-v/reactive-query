@@ -5,6 +5,7 @@ export declare function useGraphQLQuery<TData>(endpoint: string, options: GraphQ
     error: Error | null;
     loading: boolean;
     refetch: () => Promise<TData | null>;
+    refetchAsync: () => Promise<TData>;
     mutate: import("react").Dispatch<import("react").SetStateAction<TData | null>>;
-    cancel: () => void;
+    cancel: () => void | undefined;
 };

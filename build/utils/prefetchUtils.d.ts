@@ -21,6 +21,7 @@ export declare function commonFetch<TData>(endpoint: string, options: PrefetchPa
     cacheKey?: string;
     cacheTime?: number;
     isGraphQL?: boolean;
+    operationName?: string;
 }): Promise<TData>;
 export declare function prefetchQuery<TData>(endpoint: string, options?: QueryOptions<TData, any> & {
     isGraphQL?: boolean;
