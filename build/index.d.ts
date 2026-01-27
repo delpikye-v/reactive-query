@@ -1,4 +1,6 @@
 export * from "./hooks/types";
+export { queryClient } from "./core/queryClient";
+export { fetchQuery } from "./core/fetchQuery";
 export { useHybridQuery } from "./hooks/useHybridQuery";
 export { useQuery } from "./hooks/useQuery";
 export { useMutation } from "./hooks/useMutation";

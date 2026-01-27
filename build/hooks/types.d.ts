@@ -28,7 +28,7 @@ export interface MutationOptions<TData, TVariables = Record<string, any>> extend
     onSuccess?: (data: TData) => void;
     onError?: (error: any) => void;
 }
-export interface GraphQLMutationOptions<TData, TVariables = Record<string, any>> extends MutationOptions<TData, TVariables> {
+export interface GraphMutationOptions<TData, TVariables = Record<string, any>> extends MutationOptions<TData, TVariables> {
     mutation: string;
     operationName?: string;
 }

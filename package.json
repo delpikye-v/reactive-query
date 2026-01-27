@@ -1,7 +1,7 @@
 {
   "name": "reactive-query-z",
-  "version": "3.1.0",
-  "description": "Lightning-fast state & API handling, reactive library for data fetching and state orchestration in React.",
+  "version": "3.2.0",
+  "description": "A lightweight React data-fetching library with caching, mutations, REST & GraphQL support, and request deduplication.",
   "license": "MIT",
   "author": "Delpi.Kye",
 
@@ -41,19 +41,21 @@
 
   "keywords": [
     "react",
-    "intent",
-    "intent-engine",
-    "orchestration",
-    "state-management",
-    "architecture",
-    "ddd",
-    "hexagonal",
-    "side-effects",
-    "async-flow",
+    "react-query",
+    "data-fetching",
+    "api",
+    "cache",
+    "query",
+    "mutation",
+    "async",
+    "hooks",
     "react-hooks",
-    "react-library",
     "graphql",
-    "rest"
+    "rest",
+    "state-management",
+    "subscription",
+    "websocket",
+    "sse"
   ],
 
   "peerDependencies": {

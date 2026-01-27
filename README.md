@@ -1,18 +1,16 @@
 # 🗄️ reactive-query-z
 
-[![NPM](https://img.shields.io/npm/v/reactive-query-z.svg)](https://www.npmjs.com/package/reactive-query-z)
-![Downloads](https://img.shields.io/npm/dt/reactive-query-z.svg)
+[![NPM](https://img.shields.io/npm/v/reactive-query-z.svg)](https://www.npmjs.com/package/reactive-query-z) ![Downloads](https://img.shields.io/npm/dt/reactive-query-z.svg)
 
----
+[LIVE EXAMPLE](https://codesandbox.io/p/sandbox/tmxkm5)
 
 **reactive-query-z** is a **lightweight**, reactive data-fetching library for React, built with hooks and TypeScript in mind.
-Minimal API surface, predictable behavior, and production-ready features.
 
-[Live Example](https://codesandbox.io/p/sandbox/tmxkm5)
+> Minimal API surface, predictable behavior, and production-ready features.
 
 ---
 
-### ✨ Features
+## ✨ Why reactive-query-z
 
 * ⚡ Lightweight & hook-based
 * 🔁 REST + GraphQL support
@@ -23,6 +21,8 @@ Minimal API surface, predictable behavior, and production-ready features.
 * 📡 Real-time subscriptions (WebSocket / SSE)
 * 🧩 Middleware system (auth, logging, retry, timeout…)
 * 🧠 TypeScript-first API
+
+***Note:*** For full-featured query management, see [*React Query*](https://tanstack.com/query/v4)
 
 ---
 
@@ -41,7 +41,7 @@ yarn add reactive-query-z
 ### 1️⃣ Querying REST Data
 
 ```ts
-import { useQuery } from "reactive-query-z";
+import { useQuery, queryRegistry } from "reactive-query-z";
 
 type User = { id: string; title: string };
 
@@ -97,10 +97,7 @@ export function CountriesList() {
           countries { code name emoji }
         }
       `,
-      // headers: { "Content-Type": "application/json" },
       cacheKey: "countries",
-      // staleTime: 5000,
-      // autoFetch: true,
     }
   );
 
@@ -164,8 +161,10 @@ export function AddPost() {
 ### 4️⃣ GraphQL Mutation
 
 ```ts
+import { useGraphQLMutation, queryRegistry } from "reactive-query-z";
+
 export function AddPostGraphQL() {
-  const { mutate, loading, error } = useGraphQLMutation(
+  const { mutate, loading } = useGraphQLMutation(
     "https://graphqlzero.almansi.me/api",
     {
       mutation: `
@@ -178,10 +177,7 @@ export function AddPostGraphQL() {
         }
       `,
       variables: { title: "Hello", body: "World", userId: 122 },
-      // headers: { "Content-Type": "application/json" },
-      // cacheKey: "postsGraphQL",
       onSuccess: () => queryRegistry.invalidate("postsGraphQL"),
-      onError: (err) => console.error("Mutation error", err),
     }
   );
 
@@ -195,7 +191,7 @@ export function AddPostGraphQL() {
 
 ---
 
-### 5️⃣ Global Query Invalidation & GlobalError
+### 5️⃣ Global Query Invalidation & Global Error Handling
 
 ```ts
 import { queryRegistry, setGlobalErrorHandler } from "reactive-query-z";
@@ -203,10 +199,8 @@ import { queryRegistry, setGlobalErrorHandler } from "reactive-query-z";
 queryRegistry.invalidate("users"); // specific
 queryRegistry.invalidate();        // all queries
 
-// Setup a global error handler
 setGlobalErrorHandler((error, info) => {
   console.error("Global fetch error:", error, info);
-  // You can show a toast, modal, or redirect to login here
 });
 ```
 
@@ -220,9 +214,54 @@ import { useHybridQuery } from "reactive-query-z";
 const { data } = useHybridQuery("/graphql", {
   subscriptionUrl: "ws://localhost:4000",
   cacheKey: "messages",
-  // optimisticUpdate: (prev, next) => [...(prev || []), next],
-  // autoFetch: true,     
 });
+```
+
+---
+
+### 7️⃣ Prefetch & Request Deduplication
+
+#### 🔹 queryClient.fetchQuery
+
+```ts
+import { queryClient } from "reactive-query-z";
+
+await queryClient.fetchQuery<User[]>(
+  "https://jsonplaceholder.typicode.com/users",
+  { cacheKey: "users" }
+);
+```
+
+#### 🔹 queryClient.ensureQueryData (recommended)
+
+```ts
+import { queryClient, useQuery } from "reactive-query-z";
+
+type User = { id: number; name: string };
+
+async function preloadUsers() {
+  await queryClient.ensureQueryData<User[]>(
+    "https://jsonplaceholder.typicode.com/users",
+    { cacheKey: "users" }
+  );
+}
+
+function Users() {
+  const { data, loading } = useQuery<User[]>(
+    "https://jsonplaceholder.typicode.com/users",
+    { cacheKey: "users" }
+  );
+
+  if (loading) return <p>Loading...</p>;
+
+  return (
+    <ul>
+      {data?.map((u) => (
+        <li key={u.id}>{u.name}</li>
+      ))}
+    </ul>
+  );
+}
 ```
 
 ---
@@ -235,6 +274,8 @@ useMutation
 useGraphQLQuery
 useGraphQLMutation
 useHybridQuery
+
+queryClient
 queryRegistry
 
 prefetchQuery
@@ -248,30 +289,31 @@ setGlobalErrorHandler
 
 ## ⚖️ Comparison with Other Libraries
 
-| Feature                    | reactive-query-z    | React Query | SWR  | Apollo Client |
-| -------------------------- | ------------------  | ----------- | ---- | ------------- |
-| REST support               | ✅                  | ✅           | ✅   | ⚠️ Partial    |
-| GraphQL support            | ✅                  | ⚠️ Plugin    | ❌   | ✅            |
-| Real-time subscription     | ✅                  | ⚠️ Plugin    | ❌   | ✅            |
-| Global cache invalidation  | ✅                  | ✅           | ⚠️   | ✅            |
-| Optimistic updates         | ✅                  | ✅           | ⚠️   | ✅            |
-| Auto stale-time + refetch  | ✅                  | ✅           | ✅   | ✅            |
-| Full CRUD mutation support | ✅                  | ✅           | ❌   | ✅            |
-| TypeScript friendly        | ✅                  | ✅           | ✅   | ✅            |
-| Lightweight                | ✅                  | ⚠️           | ✅   | ⚠️            |
-| Subscription built-in      | ✅                  | ❌           | ❌   | ✅            |
+| Feature                   | reactive-query-z | React Query | SWR  | Apollo Client |
+| ------------------------- | ---------------- | ----------- | ---- | ------------- |
+| REST support              | ✅                | ✅          | ✅   | ⚠️ Partial    |
+| GraphQL support           | ✅                | ⚠️ Plugin   | ❌   | ✅            |
+| Real-time subscription    | ✅                | ⚠️ Plugin   | ❌   | ✅            |
+| Global cache invalidation | ✅                | ✅          | ⚠️   | ✅            |
+| Optimistic updates        | ✅                | ✅          | ⚠️   | ✅            |
+| Stale-while-revalidate    | ✅                | ✅          | ✅   | ✅            |
+| Full CRUD mutations       | ✅                | ✅          | ❌   | ✅            |
+| TypeScript-first          | ✅                | ✅          | ✅   | ✅            |
+| Lightweight               | ✅                | ⚠️          | ✅   | ⚠️            |
+| Subscription built-in     | ✅                | ❌          | ❌   | ✅            |
 
 ---
 
-## 🤔 Why reactive-query-z?
+## When to use
+- You want full control over async orchestration
+- You dislike heavy cache lifecycles
+- You prefer explicit invalidation
 
-* You want React Query–like power but with simpler internals
-* You need REST + GraphQL without separate clients
-* You want middleware control over every request
-* You prefer explicit cache keys & invalidation
-* You want something easy to read, debug, and extend
+---
 
-***Note:*** For full-featured query management, see [React Query](https://tanstack.com/query/v4)
+## When NOT to use
+- You need background refetch
+- You need offline persistence
 
 ---
 
